@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.music.mapper.SongMapper">
+
+    <!-- 分页查询歌曲（带歌手信息） -->
+    <select id="getSongPageWithSinger" resultType="com.music.entity.Song">
+        SELECT 
+            s.*,
+            singer.name as singerName,
+            album.name as albumName
+        FROM songs s
+        LEFT JOIN singers singer ON s.singer_id = singer.id
+        LEFT JOIN albums album ON s.album_id = album.id
+        WHERE s.status = 1
+        
+        <if test="name != null and name != ''">
+            AND s.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        
+        <if test="singerId != null">
+            AND s.singer_id = #{singerId}
+        </if>
+        
+        <if test="albumId != null">
+            AND s.album_id = #{albumId}
+        </if>
+        
+        ORDER BY s.create_time DESC
+    </select>
+
+    <!-- 搜索歌曲（带歌手信息） -->
+    <select id="searchSongsWithSinger" resultType="com.music.entity.Song">
+        SELECT 
+            s.*,
+            singer.name as singerName,
+            album.name as albumName
+        FROM songs s
+        LEFT JOIN singers singer ON s.singer_id = singer.id
+        LEFT JOIN albums album ON s.album_id = album.id
+        WHERE s.status = 1
+        
+        <if test="keyword != null and keyword != ''">
+            AND (
+                s.name LIKE CONCAT('%', #{keyword}, '%')
+                OR singer.name LIKE CONCAT('%', #{keyword}, '%')
+                OR album.name LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+        
+        ORDER BY 
+            CASE 
+                WHEN s.name LIKE CONCAT(#{keyword}, '%') THEN 1
+                WHEN singer.name LIKE CONCAT(#{keyword}, '%') THEN 2
+                WHEN s.name LIKE CONCAT('%', #{keyword}, '%') THEN 3
+                WHEN singer.name LIKE CONCAT('%', #{keyword}, '%') THEN 4
+                ELSE 5
+            END,
+            s.play_count DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

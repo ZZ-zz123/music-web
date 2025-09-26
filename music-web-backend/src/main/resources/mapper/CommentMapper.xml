@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.music.mapper.CommentMapper">
+
+    <!-- 根据目标ID和类型获取评论列表（带用户信息） -->
+    <select id="getCommentsByTarget" resultType="com.music.entity.Comment">
+        SELECT 
+            c.*,
+            u.username,
+            u.nickname,
+            u.avatar as userAvatar,
+            CASE WHEN cl.user_id IS NOT NULL THEN TRUE ELSE FALSE END as isLiked
+        FROM comments c
+        LEFT JOIN users u ON c.user_id = u.id
+        LEFT JOIN comment_likes cl ON c.id = cl.comment_id AND cl.user_id = #{userId}
+        WHERE c.target_id = #{targetId}
+        AND c.target_type = #{targetType}
+        AND c.status = 1
+        ORDER BY c.create_time DESC
+    </select>
+
+    <!-- 根据评论ID获取评论详情（带用户信息） -->
+    <select id="getCommentById" resultType="com.music.entity.Comment">
+        SELECT 
+            c.*,
+            u.username,
+            u.nickname,
+            u.avatar as userAvatar,
+            CASE WHEN cl.user_id IS NOT NULL THEN TRUE ELSE FALSE END as isLiked
+        FROM comments c
+        LEFT JOIN users u ON c.user_id = u.id
+        LEFT JOIN comment_likes cl ON c.id = cl.comment_id AND cl.user_id = #{userId}
+        WHERE c.id = #{commentId}
+        AND c.status = 1
+    </select>
+
+    <!-- 获取用户对评论的点赞状态 -->
+    <select id="getUserLikeStatus" resultType="java.lang.Boolean">
+        SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM comment_likes
+        WHERE comment_id = #{commentId} AND user_id = #{userId}
+    </select>
+
+    <!-- 增加评论点赞数 -->
+    <update id="incrementLikeCount">
+        UPDATE comments 
+        SET like_count = like_count + 1 
+        WHERE id = #{commentId}
+    </update>
+
+    <!-- 减少评论点赞数 -->
+    <update id="decrementLikeCount">
+        UPDATE comments 
+        SET like_count = like_count - 1 
+        WHERE id = #{commentId} AND like_count > 0
+    </update>
+
+</mapper>

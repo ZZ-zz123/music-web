@@ -1,0 +1,19 @@
+演示音频文件夹
+
+在这个文件夹中，您可以放置音频文件用于测试播放功能。
+
+支持的音频格式：
+- MP3
+- WAV
+- OGG
+- M4A
+
+使用方法：
+1. 将音频文件放入 public/audio/ 文件夹
+2. 更新 src/data/mockData.ts 中的 audioUrl 路径
+3. 例如：audioUrl: '/audio/your-music-file.mp3'
+
+注意：
+- 确保音频文件版权合规
+- 可以使用免费音乐资源如 Freesound.org
+- 开发时可以使用短音频片段进行测试
