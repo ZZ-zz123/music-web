@@ -1,6 +1,6 @@
-# 🎵 音乐播放器 Web 应用
+# 🎵 音乐网站
 
-一个功能完整的现代音乐网站，采用前后端分离架构，UI 设计参考 Spotify，提供流畅的音乐播放体验。
+一个可以和AI聊天的现代音乐网站，采用前后端分离架构，UI 设计参考 Spotify，提供流畅的音乐播放体验。
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![React](https://img.shields.io/badge/React-18+-61dafb.svg)
